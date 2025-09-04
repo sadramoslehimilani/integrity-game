@@ -8,25 +8,34 @@ The game follows a **Scene-based Architecture** using Phaser.js, with clear sepa
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   IntroScene    │ -> │   GameScene     │ -> │   QuizScene     │
 │                 │    │                 │    │                 │
-│ • Title Screen  │    │ • Story Setup   │    │ • Reflection    │
-│ • Character     │    │ • Decision      │    │ • Questions     │
-│   Intros        │    │ • Outcomes      │    │ • Feedback      │
-│ • Menu Options  │    │                 │    │                 │
+│ • Title Screen  │    │ • Soccer Field  │    │ • Questions     │
+│ • Instructions  │    │ • Characters    │    │ • Scoring       │
+│ • Play Button   │    │ • Dialogue      │    │ • Feedback      │
+│ • Margarine Font│    │ • Transitions   │    │ • Progress      │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                                                        │
                                                        v
                                                ┌─────────────────┐
                                                │   EndScene      │
                                                │                 │
-                                               │ • Challenge     │
+                                               │ • Results       │
                                                │ • Replay Option │
-                                               │ • Credits       │
+                                               │ • Share Feature │
                                                └─────────────────┘
 ```
 
+### Implemented BaseScene Pattern
+
+All scenes extend from `BaseScene.js` which provides:
+- Scene transition management
+- Responsive design utilities
+- Consistent UI component creation
+- Margarine font integration
+- Loading state management
+
 ## Core Design Patterns
 
-### Scene Management Pattern
+### Scene Management Pattern (✅ IMPLEMENTED)
 
 ```javascript
 class BaseScene extends Phaser.Scene {
@@ -34,16 +43,27 @@ class BaseScene extends Phaser.Scene {
     super({ key });
   }
 
-  preload() {
-    // Asset loading logic
+  // Implemented scene transition system
+  transitionToScene(sceneKey, data = {}) {
+    this.scene.start(sceneKey, data);
   }
 
-  create() {
-    // Scene initialization
+  // Responsive design utilities
+  getResponsiveSize(baseSize) {
+    const scale = Math.min(this.cameras.main.width / 800, this.cameras.main.height / 600);
+    return Math.max(baseSize * scale, baseSize * 0.5);
   }
 
-  update(time, delta) {
-    // Game loop logic
+  // Consistent UI creation with Margarine font
+  createButton(x, y, text, callback, style = {}) {
+    const defaultStyle = {
+      fontFamily: 'Margarine, cursive',
+      fontSize: '24px',
+      fill: '#ffffff',
+      backgroundColor: '#4CAF50',
+      padding: { x: 20, y: 10 }
+    };
+    // Implementation details...
   }
 }
 ```
@@ -95,43 +115,82 @@ class EventManager {
 
 ## Component Relationships
 
-### Character System
+### Character System (✅ IMPLEMENTED)
 
 ```
-Character (Base Class)
-├── Nico (Player Character)
-│   ├── Idle Animation
-│   ├── Kick Animation
-│   ├── Thinking Pose
-│   └── Raise Hand Animation
-├── Carla (Friend)
-│   ├── Idle Animation
-│   ├── Applaud Animation
-│   └── Disappointed Animation
-├── Coach Leo
-│   ├── Idle Animation
-│   └── Nodding Animation
-└── Referee
-    ├── Idle Animation
-    └── Pointing Animation
+Character Positioning System
+├── Nico (Main Character)
+│   ├── Position: (200, 400)
+│   ├── Label: "Nico" with Margarine font
+│   └── Interactive: Ready for dialogue
+├── Carla (Supporting Character)
+│   ├── Position: (600, 400)
+│   ├── Label: "Carla" with Margarine font
+│   └── Interactive: Ready for dialogue
+├── Coach Leo (Authority Figure)
+│   ├── Position: (100, 200)
+│   ├── Label: "Coach Leo" with Margarine font
+│   └── Interactive: Ready for dialogue
+└── Referee (Game Official)
+    ├── Position: (700, 200)
+    ├── Label: "Referee" with Margarine font
+    └── Interactive: Ready for dialogue
 ```
 
-### UI System
+### Dialogue System Framework
+
+```javascript
+// Implemented in GameScene.js
+setupUI() {
+  this.dialogueBox = this.add.rectangle(400, 500, 760, 120, 0x000000, 0.8);
+  this.dialogueText = this.add.text(400, 500, '', {
+    fontFamily: 'Margarine, cursive',
+    fontSize: '18px',
+    fill: '#ffffff',
+    align: 'center',
+    wordWrap: { width: 720 }
+  }).setOrigin(0.5);
+}
+```
+
+### UI System (✅ IMPLEMENTED)
 
 ```
-UI Components
-├── Buttons
-│   ├── DecisionButton (Truth/Silent)
-│   ├── MenuButton (Play/About/Quit)
-│   └── QuizButton (Multiple Choice)
-├── Text Displays
-│   ├── DialogueBox
-│   ├── MoralMessage
-│   └── QuizQuestion
-└── Effects
-    ├── ThoughtBubble
-    ├── SparkleEffect
-    └── ParticleSystem
+UI Components (All with Margarine Font)
+├── Buttons (BaseScene.createButton)
+│   ├── Play Button (IntroScene)
+│   ├── Instructions Button (IntroScene)
+│   ├── Continue Button (GameScene)
+│   └── Quiz Choice Buttons (QuizScene)
+├── Text Displays (BaseScene.createStyledText)
+│   ├── Title Text (All Scenes)
+│   ├── Dialogue Text (GameScene)
+│   ├── Question Text (QuizScene)
+│   └── Feedback Text (QuizScene, EndScene)
+├── Interactive Elements
+│   ├── Instructions Overlay (IntroScene)
+│   ├── Quiz Progress Display (QuizScene)
+│   ├── Score Tracking (QuizScene)
+│   └── Results Display (EndScene)
+└── Responsive Design
+    ├── Dynamic Scaling (All Scenes)
+    ├── Flexible Layouts (All Scenes)
+    └── Touch-Friendly Controls (All Scenes)
+```
+
+### Font Integration Pattern (✅ IMPLEMENTED)
+
+```javascript
+// Google Fonts integration in index.html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+
+// Consistent font application across all scenes
+const defaultStyle = {
+  fontFamily: 'Margarine, cursive',
+  // Other styling properties...
+};
 ```
 
 ### Asset Management
