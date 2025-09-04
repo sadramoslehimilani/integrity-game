@@ -24,18 +24,21 @@ Children today face increasing pressure to make ethical decisions in complex soc
 ### Core Experience
 
 1. **Engaging Introduction (✅ ACTIVE)**
+
    - Child meets the game through a welcoming IntroScene
    - Clean, friendly interface with Margarine font for readability
    - Clear "Play" and "Instructions" buttons
    - Responsive design works on all devices
 
 2. **Interactive Story (✅ FRAMEWORK READY)**
+
    - Soccer field setting with positioned characters
    - Four key characters: Nico, Carla, Coach Leo, and Referee
    - Visual storytelling foundation with dialogue system
    - Scene transitions guide the narrative flow
 
 3. **Guided Reflection (✅ QUIZ SYSTEM ACTIVE)**
+
    - QuizScene with age-appropriate question framework
    - Scoring system that encourages learning
    - Progress tracking and immediate feedback

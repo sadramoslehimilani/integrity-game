@@ -27,6 +27,7 @@ The game follows a **Scene-based Architecture** using Phaser.js, with clear sepa
 ### Implemented BaseScene Pattern
 
 All scenes extend from `BaseScene.js` which provides:
+
 - Scene transition management
 - Responsive design utilities
 - Consistent UI component creation
@@ -50,18 +51,21 @@ class BaseScene extends Phaser.Scene {
 
   // Responsive design utilities
   getResponsiveSize(baseSize) {
-    const scale = Math.min(this.cameras.main.width / 800, this.cameras.main.height / 600);
+    const scale = Math.min(
+      this.cameras.main.width / 800,
+      this.cameras.main.height / 600
+    );
     return Math.max(baseSize * scale, baseSize * 0.5);
   }
 
   // Consistent UI creation with Margarine font
   createButton(x, y, text, callback, style = {}) {
     const defaultStyle = {
-      fontFamily: 'Margarine, cursive',
-      fontSize: '24px',
-      fill: '#ffffff',
-      backgroundColor: '#4CAF50',
-      padding: { x: 20, y: 10 }
+      fontFamily: "Margarine, cursive",
+      fontSize: "24px",
+      fill: "#ffffff",
+      backgroundColor: "#4CAF50",
+      padding: { x: 20, y: 10 },
     };
     // Implementation details...
   }

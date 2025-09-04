@@ -15,14 +15,8 @@ export class GameScene extends BaseScene {
     }
 
     preload() {
-        // Load soccer field background (placeholder for now)
-        this.load.image('soccer-field', 'assets/space.png'); // Using existing asset as placeholder
-        
-        // Load character sprites (placeholders)
-        this.load.image('nico', 'assets/phaser.png'); // Placeholder for Nico
-        this.load.image('carla', 'assets/phaser.png'); // Placeholder for Carla
-        this.load.image('coach-leo', 'assets/phaser.png'); // Placeholder for Coach Leo
-        this.load.image('referee', 'assets/phaser.png'); // Placeholder for Referee
+        // Load soccer field background using intro background for consistency
+        this.load.image('soccer-field', 'assets/intro-background.png'); // Using intro background for visual consistency
         
         // Load UI elements
         this.load.image('dialogue-box', 'assets/phaser.png'); // Placeholder for dialogue box
@@ -37,8 +31,7 @@ export class GameScene extends BaseScene {
         // Setup soccer field
         this.setupSoccerField();
         
-        // Setup characters
-        this.setupCharacters();
+        // Character setup removed - no placeholder characters
         
         // Setup UI
         this.setupUI();
@@ -54,99 +47,23 @@ export class GameScene extends BaseScene {
         // Add field background
         this.field = this.add.image(this.centerX, this.centerY, 'soccer-field');
         this.field.setDisplaySize(this.gameWidth, this.gameHeight);
-        this.field.setTint(0x4CAF50); // Green tint to make it look more like grass
-        
-        // Add field markings (simple rectangles for now)
-        this.fieldMarkings = this.add.group();
-        
-        // Center circle
-        const centerCircle = this.add.circle(this.centerX, this.centerY, 80);
-        centerCircle.setStrokeStyle(4, 0xffffff);
-        centerCircle.setFillStyle(0x4CAF50, 0);
-        this.fieldMarkings.add(centerCircle);
-        
-        // Goal areas
-        const leftGoal = this.add.rectangle(50, this.centerY, 100, 200);
-        leftGoal.setStrokeStyle(4, 0xffffff);
-        leftGoal.setFillStyle(0x4CAF50, 0);
-        this.fieldMarkings.add(leftGoal);
-        
-        const rightGoal = this.add.rectangle(this.gameWidth - 50, this.centerY, 100, 200);
-        rightGoal.setStrokeStyle(4, 0xffffff);
-        rightGoal.setFillStyle(0x4CAF50, 0);
-        this.fieldMarkings.add(rightGoal);
+        // Clean background without any field markings
     }
     
     /**
-     * Setup character sprites and positions
+     * Setup character sprites and positions - removed placeholder implementation
      */
     setupCharacters() {
+        // Character system will be implemented when proper character assets are available
         this.characters = {};
-        
-        // Nico (main character) - positioned center-left
-        this.characters.nico = this.add.image(this.centerX - 200, this.centerY + 50, 'nico');
-        this.characters.nico.setScale(0.3);
-        this.characters.nico.setTint(0x3498db); // Blue tint to distinguish
-        
-        // Carla (teammate) - positioned center-right
-        this.characters.carla = this.add.image(this.centerX + 200, this.centerY + 50, 'carla');
-        this.characters.carla.setScale(0.3);
-        this.characters.carla.setTint(0xe74c3c); // Red tint to distinguish
-        
-        // Coach Leo - positioned on sideline
-        this.characters.coachLeo = this.add.image(this.centerX - 300, this.centerY - 200, 'coach-leo');
-        this.characters.coachLeo.setScale(0.4);
-        this.characters.coachLeo.setTint(0xf39c12); // Orange tint to distinguish
-        
-        // Referee - positioned center field
-        this.characters.referee = this.add.image(this.centerX, this.centerY - 100, 'referee');
-        this.characters.referee.setScale(0.35);
-        this.characters.referee.setTint(0x2c3e50); // Dark tint for referee
-        
-        // Add character labels
-        this.addCharacterLabels();
-        
-        // Initially hide all characters except Nico
-        Object.keys(this.characters).forEach(key => {
-            if (key !== 'nico') {
-                this.characters[key].setAlpha(0.7);
-            }
-        });
+        this.characterLabels = {};
     }
     
     /**
-     * Add name labels for characters
+     * Add name labels for characters - removed placeholder implementation
      */
     addCharacterLabels() {
-        this.characterLabels = {};
-        
-        this.characterLabels.nico = this.add.text(
-            this.characters.nico.x, 
-            this.characters.nico.y + 60, 
-            'Nico', 
-            { fontSize: '16px', fontFamily: 'Margarine, cursive', color: '#ffffff', backgroundColor: '#3498db', padding: { x: 8, y: 4 } }
-        ).setOrigin(0.5);
-        
-        this.characterLabels.carla = this.add.text(
-            this.characters.carla.x, 
-            this.characters.carla.y + 60, 
-            'Carla', 
-            { fontSize: '16px', fontFamily: 'Margarine, cursive', color: '#ffffff', backgroundColor: '#e74c3c', padding: { x: 8, y: 4 } }
-        ).setOrigin(0.5);
-        
-        this.characterLabels.coachLeo = this.add.text(
-            this.characters.coachLeo.x, 
-            this.characters.coachLeo.y + 70, 
-            'Coach Leo', 
-            { fontSize: '16px', fontFamily: 'Margarine, cursive', color: '#ffffff', backgroundColor: '#f39c12', padding: { x: 8, y: 4 } }
-        ).setOrigin(0.5);
-        
-        this.characterLabels.referee = this.add.text(
-            this.characters.referee.x, 
-            this.characters.referee.y + 60, 
-            'Referee', 
-            { fontSize: '16px', fontFamily: 'Margarine, cursive', color: '#ffffff', backgroundColor: '#2c3e50', padding: { x: 8, y: 4 } }
-        ).setOrigin(0.5);
+        // Character labels will be implemented when proper character assets are available
     }
     
     /**
@@ -286,27 +203,11 @@ export class GameScene extends BaseScene {
     }
     
     /**
-     * Highlight a specific character
+     * Highlight a specific character - placeholder implementation
      */
     highlightCharacter(characterKey) {
-        // Reset all characters
-        Object.keys(this.characters).forEach(key => {
-            this.characters[key].setAlpha(0.7);
-            this.characters[key].setScale(key === 'nico' ? 0.3 : key === 'coachLeo' ? 0.4 : 0.35);
-        });
-        
-        // Highlight target character
-        if (this.characters[characterKey]) {
-            this.characters[characterKey].setAlpha(1);
-            this.tweens.add({
-                targets: this.characters[characterKey],
-                scaleX: this.characters[characterKey].scaleX * 1.2,
-                scaleY: this.characters[characterKey].scaleY * 1.2,
-                duration: 300,
-                yoyo: true,
-                ease: 'Power2.easeInOut'
-            });
-        }
+        // Character highlighting will be implemented when proper character assets are available
+        console.log(`Would highlight character: ${characterKey}`);
     }
     
     /**
