@@ -203,6 +203,8 @@ const defaultStyle = {
 AssetLoader
 ├── Spritesheets
 │   ├── Character Sprites
+│   │   ├── coach-leo-spritesheet (1000x657, 4 frames)
+│   │   └── [other character animations]
 │   ├── UI Elements
 │   └── Effects
 ├── Audio
@@ -212,6 +214,18 @@ AssetLoader
 └── Backgrounds
     ├── Soccer Field
     └── UI Overlays
+```
+
+### Animation Asset Structure
+
+```
+assets/
+├── images/
+│   ├── characters/
+│   │   ├── leo-animation.png (1000x657, 4 frames)
+│   │   └── [other character spritesheets]
+│   └── backgrounds/
+└── audio/ (pending)
 ```
 
 ## Critical Implementation Paths
@@ -239,6 +253,25 @@ class AnimationManager {
     // Support callbacks
   }
 }
+
+// Character spritesheet animation implementation
+this.anims.create({
+    key: 'coach-leo-animation',
+    frames: this.anims.generateFrameNumbers('coach-leo-spritesheet', {
+        start: 0,
+        end: 3
+    }),
+    frameRate: 4,
+    repeat: -1
+});
+
+// Character sprite positioning with animation
+const coachLeoSprite = this.add.sprite(x, y, 'coach-leo-spritesheet')
+    .setScale(0.5)
+    .setOrigin(0, 1)
+    .setDepth(1000)
+    .setAlpha(0)
+    .play('coach-leo-animation');
 ```
 
 ### Input Handling
