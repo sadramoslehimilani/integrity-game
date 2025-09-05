@@ -11,11 +11,28 @@ export class EndScene extends BaseScene {
 
   init(data) {
     super.init(data);
-    this.score = data.score || 0;
-    this.maxScore = data.maxScore || 30;
-    this.percentage = data.percentage || 0;
-    this.grade = data.grade || "Try Again";
-    this.answers = data.answers || [];
+    console.log("[EndScene] init called with data:", data);
+    
+    // Check if this is a reset
+    if (data && data.reset) {
+      console.log("[EndScene] Reset detected in init, this should not happen during normal gameplay");
+      // If we somehow get here with a reset flag, we should have default values
+      this.score = 0;
+      this.maxScore = 30;
+      this.percentage = 0;
+      this.grade = "Try Again";
+      this.answers = [];
+    } else {
+      // Normal initialization with quiz results
+      this.score = data.score || 0;
+      this.maxScore = data.maxScore || 30;
+      this.percentage = data.percentage || 0;
+      this.grade = data.grade || "Try Again";
+      this.answers = data.answers || [];
+    }
+    
+    console.log("[EndScene] Initialized with score:", this.score);
+    console.log("[EndScene] Initialized with percentage:", this.percentage);
   }
 
   preload() {
@@ -23,8 +40,7 @@ export class EndScene extends BaseScene {
     this.load.image("end-background", "assets/intro-background.png");
 
     // Load celebration/result graphics
-    this.load.image("trophy", "assets/phaser.png"); // Placeholder for trophy
-    this.load.image("medal", "assets/phaser.png"); // Placeholder for medal
+    // Removed phaser.png placeholders for trophy and medal
 
     this.showLoading();
   }
@@ -56,16 +72,7 @@ export class EndScene extends BaseScene {
       "end-background"
     );
     this.background.setDisplaySize(this.gameWidth, this.gameHeight);
-
-    // Add overlay for better text readability
-    this.overlay = this.add.rectangle(
-      this.centerX,
-      this.centerY,
-      this.gameWidth,
-      this.gameHeight,
-      0x2c3e50,
-      0.7
-    );
+    // Overlay removed as requested
   }
 
   /**
@@ -132,14 +139,7 @@ export class EndScene extends BaseScene {
       }
     );
 
-    // Achievement icon
-    this.achievementIcon = this.add.image(
-      this.centerX - 200,
-      this.centerY - 140,
-      this.getAchievementIcon()
-    );
-    this.achievementIcon.setScale(0.3);
-    this.achievementIcon.setTint(this.getGradeColor());
+    // Achievement icon removed since we no longer have trophy/medal images
 
     // Feedback message
     this.feedbackText = this.createStyledText(
@@ -175,7 +175,6 @@ export class EndScene extends BaseScene {
       this.gradeText,
       this.scoreText,
       this.percentageText,
-      this.achievementIcon,
       this.feedbackText,
       this.learningSummary,
     ]);
@@ -187,24 +186,12 @@ export class EndScene extends BaseScene {
   setupActionButtons() {
     // Play again button
     this.playAgainButton = this.createButton(
-      this.centerX - 120,
+      this.centerX,
       this.centerY + 180,
       "Play Again",
       () => this.playAgain(),
       {
         backgroundColor: "#3498db",
-        fontSize: "20px",
-      }
-    );
-
-    // Main menu button
-    this.mainMenuButton = this.createButton(
-      this.centerX + 120,
-      this.centerY + 180,
-      "Main Menu",
-      () => this.goToMainMenu(),
-      {
-        backgroundColor: "#95a5a6",
         fontSize: "20px",
       }
     );
@@ -230,8 +217,6 @@ export class EndScene extends BaseScene {
     this.resultsContainer.setAlpha(0);
     this.playAgainButton.background.setAlpha(0);
     this.playAgainButton.text.setAlpha(0);
-    this.mainMenuButton.background.setAlpha(0);
-    this.mainMenuButton.text.setAlpha(0);
     this.shareButton.background.setAlpha(0);
     this.shareButton.text.setAlpha(0);
 
@@ -266,15 +251,6 @@ export class EndScene extends BaseScene {
     });
 
     this.tweens.add({
-      targets: [this.mainMenuButton.background, this.mainMenuButton.text],
-      alpha: 1,
-      y: "+=20",
-      duration: 500,
-      delay: 1200,
-      ease: "Back.easeOut",
-    });
-
-    this.tweens.add({
       targets: [this.shareButton.background, this.shareButton.text],
       alpha: 1,
       y: "+=20",
@@ -303,8 +279,8 @@ export class EndScene extends BaseScene {
    * Get achievement icon based on performance
    */
   getAchievementIcon() {
-    if (this.percentage >= 80) return "trophy";
-    return "medal";
+    // Return null since we removed the trophy and medal images
+    return null;
   }
 
   /**
@@ -326,37 +302,23 @@ export class EndScene extends BaseScene {
    * Get learning summary based on answers
    */
   getLearningSummary() {
-    const totalQuestions = this.answers.length;
-    const perfectAnswers = this.answers.filter(
-      (a) => a.integrityPoints === 10
-    ).length;
-
-    let summary = `You answered ${perfectAnswers} out of ${totalQuestions} questions with perfect integrity.\n\n`;
-
-    summary += "Key lessons learned:\n";
-    summary += "• Honesty builds trust with others\n";
-    summary +=
-      "• It's important to tell the truth, even about small mistakes\n";
-    summary += "• Being honest shows good character and integrity\n";
-    summary +=
-      "• Making the right choice isn't always easy, but it's always worth it";
-
-    return summary;
+    // Return empty string as requested - removed all key lessons learned
+    return "";
   }
 
   /**
    * Add celebration effects for high scores
    */
   addCelebrationEffects() {
-    // Create simple particle effect using existing sprites
+    // Create simple particle effect using rectangles instead of images
     for (let i = 0; i < 10; i++) {
-      const particle = this.add.image(
+      const particle = this.add.rectangle(
         this.centerX + Phaser.Math.Between(-200, 200),
         this.centerY - 300,
-        "phaser"
+        10,
+        10,
+        Phaser.Math.Between(0x000000, 0xffffff)
       );
-      particle.setScale(0.1);
-      particle.setTint(Phaser.Math.Between(0x000000, 0xffffff));
 
       this.tweens.add({
         targets: particle,
@@ -376,15 +338,29 @@ export class EndScene extends BaseScene {
    * Restart the game
    */
   playAgain() {
-    this.transitionToScene("IntroScene");
+    console.log("[EndScene] playAgain called - Starting game restart process");
+    
+    // Create a unique reset data object with timestamp
+    const resetData = { reset: true, timestamp: Date.now() };
+    console.log("[EndScene] Reset data:", resetData);
+    
+    // First stop all scenes to ensure clean state
+    console.log("[EndScene] Stopping all game scenes");
+    this.scene.stop("GameScene");
+    this.scene.stop("QuizScene");
+    this.scene.stop("EndScene");
+    
+    // Restart the game by starting the IntroScene with reset data
+    console.log("[EndScene] Starting IntroScene with reset parameter");
+    
+    // Use scene.start which completely resets the scene
+    this.scene.start("IntroScene", resetData);
+    
+    // Log the scene status
+    console.log("[EndScene] Current active scenes:", this.scene.manager.getScenes(true).map(s => s.scene.key));
   }
 
-  /**
-   * Go to main menu
-   */
-  goToMainMenu() {
-    this.transitionToScene("IntroScene");
-  }
+  // Main menu functionality removed
 
   /**
    * Share results (placeholder functionality)

@@ -14,6 +14,39 @@ export class GameScene extends BaseScene {
     };
   }
 
+  init(data) {
+    super.init(data);
+    console.log("[GameScene] init called with data:", data);
+    
+    // Always reset game state to ensure clean start
+    console.log("[GameScene] Initializing fresh game state");
+    this.currentStoryStep = 0;
+    
+    // If this is a reset from EndScene, preserve the reset flag and timestamp
+    if (data && data.reset) {
+      console.log("[GameScene] Reset detected with timestamp:", data.timestamp);
+      this.gameData = {
+        playerChoices: [],
+        integrityScore: 0,
+        playerName: data.playerName || "Nico",
+        gameMode: data.gameMode || "story",
+        reset: true,
+        timestamp: data.timestamp
+      };
+    } else {
+      // Normal game start
+      this.gameData = {
+        playerChoices: [],
+        integrityScore: 0,
+        playerName: data?.playerName || "Nico",
+        gameMode: data?.gameMode || "story"
+      };
+    }
+    
+    console.log("[GameScene] Initialized with gameData:", this.gameData);
+    console.log("[GameScene] Starting with currentStoryStep:", this.currentStoryStep);
+  }
+
   preload() {
     // Load soccer field background using intro background for consistency
     this.load.image("soccer-field", "assets/intro-background.png"); // Using intro background for visual consistency
@@ -48,7 +81,13 @@ export class GameScene extends BaseScene {
   create() {
     super.create();
     this.hideLoading();
-
+    
+    console.log("[GameScene] create called with data:", this.gameData);
+    
+    // Reset game data if this is a new game
+    this.currentStoryStep = 0;
+    console.log("[GameScene] Reset currentStoryStep to", this.currentStoryStep);
+    
     // Setup soccer field
     this.setupSoccerField();
 

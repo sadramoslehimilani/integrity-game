@@ -8,6 +8,17 @@ export class IntroScene extends BaseScene {
   constructor() {
     super("IntroScene");
   }
+  
+  init(data) {
+    super.init(data);
+    console.log("[IntroScene] init called with data:", data);
+    this.gameData = data || {};
+    
+    // Check if this is a reset from EndScene
+    if (data && data.reset) {
+      console.log("[IntroScene] Reset detected in init, timestamp:", data.timestamp);
+    }
+  }
 
   preload() {
     // Load intro background
@@ -19,6 +30,13 @@ export class IntroScene extends BaseScene {
 
   create() {
     super.create();
+
+    console.log("[IntroScene] create called with data:", this.gameData);
+    
+    // Check if this is a reset from EndScene
+    if (this.gameData && this.gameData.reset) {
+      console.log("[IntroScene] Reset detected in create method, timestamp:", this.gameData.timestamp);
+    }
 
     // Hide loading indicator
     this.hideLoading();
@@ -38,7 +56,7 @@ export class IntroScene extends BaseScene {
       this.gameWidth,
       this.gameHeight,
       0x000000,
-      0.3
+      0.5
     );
 
     // Game title
@@ -58,11 +76,11 @@ export class IntroScene extends BaseScene {
     // Subtitle
     this.subtitleText = this.createStyledText(
       this.centerX,
-      this.centerY - 140,
+      this.centerY - 120,
       "A Game About Honesty and Making the Right Choice",
       {
         fontSize: "24px",
-        color: "#ecf0f1",
+        color: "#ffffff",
         fontStyle: "italic",
       }
     );
@@ -86,7 +104,7 @@ export class IntroScene extends BaseScene {
       "Recommended for ages 6-9",
       {
         fontSize: "16px",
-        color: "#bdc3c7",
+        color: "#ffffff",
         fontStyle: "italic",
       }
     );
@@ -195,10 +213,35 @@ export class IntroScene extends BaseScene {
    * Start the main game
    */
   startGame() {
-    this.transitionToScene("GameScene", {
-      playerName: "Nico",
-      gameMode: "story",
-    });
+    console.log("[IntroScene] startGame called with data:", this.gameData);
+    
+    // Check if this is a reset from EndScene
+    if (this.gameData && this.gameData.reset) {
+      console.log("[IntroScene] Reset parameter detected, performing full game reset");
+      
+      // Create fresh game data with reset timestamp
+      const gameData = {
+        playerName: "Nico",
+        gameMode: "story",
+        reset: true,
+        timestamp: this.gameData.timestamp || Date.now()
+      };
+      
+      console.log("[IntroScene] Starting GameScene with fresh data:", gameData);
+      
+      // Use scene.start to ensure a complete reset
+      this.scene.stop("IntroScene");
+      this.scene.start("GameScene", gameData);
+      
+      console.log("[IntroScene] GameScene started with reset data");
+    } else {
+      // Normal game start
+      console.log("[IntroScene] Normal game start");
+      this.transitionToScene("GameScene", {
+        playerName: "Nico",
+        gameMode: "story"
+      });
+    }
   }
 
   /**

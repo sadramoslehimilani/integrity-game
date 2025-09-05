@@ -47,8 +47,17 @@ export class BaseScene extends Phaser.Scene {
    * @param {object} data - Data to pass to the next scene
    */
   transitionToScene(targetScene, data = {}) {
-    if (this.isTransitioning) return;
+    if (this.isTransitioning) {
+      console.log(
+        `[${this.sceneKey}] Already transitioning, ignoring request to ${targetScene}`
+      );
+      return;
+    }
 
+    console.log(
+      `[${this.sceneKey}] Transitioning to ${targetScene} with data:`,
+      data
+    );
     this.isTransitioning = true;
 
     // Fade out current scene
@@ -56,6 +65,7 @@ export class BaseScene extends Phaser.Scene {
 
     // Start next scene after fade completes
     this.cameras.main.once("camerafadeoutcomplete", () => {
+      console.log(`[${this.sceneKey}] Fade complete, starting ${targetScene}`);
       this.scene.start(targetScene, data);
     });
   }

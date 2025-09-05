@@ -11,6 +11,7 @@
 - ✅ **COMPLETED**: Nico character animation system with 12-frame spritesheet
 - ✅ **COMPLETED**: Carla character animation system with 9-frame spritesheet
 - ✅ **COMPLETED**: Scenario updated from "The Lost Whistle" to "Out of Bounds"
+- ✅ **COMPLETED**: Game reset functionality fixed for proper scene transitions
 - 🔄 **CURRENT**: Ready for Phase 4 - Assets & Polish Enhancement
 
 ### Immediate Next Steps
@@ -28,6 +29,7 @@
 - **Build Tool**: Webpack for module bundling and asset optimization
 - **Code Organization**: Scene-based architecture with clear separation of concerns
 - **Asset Strategy**: Progressive loading to optimize initial load times
+- **Scene Transitions**: Improved scene management with proper reset handling
 
 ### Design Philosophy
 
@@ -44,6 +46,7 @@
 - **Modular Structure**: Separate concerns with clear file organization
 - **Consistent Naming**: camelCase for variables/functions, PascalCase for classes
 - **Documentation**: JSDoc comments for public methods and complex logic
+- **Logging**: Extensive console logging for debugging scene transitions
 
 ### Animation & Interaction Patterns
 
@@ -63,6 +66,14 @@
 - **Audio Optimization**: Multiple formats for browser compatibility
 - **Responsive Images**: Scale appropriately for different screen sizes
 - **Loading Strategy**: Preload critical assets, lazy-load optional content
+
+### Scene Management Patterns
+
+- **Scene Transitions**: Using scene.start() for complete scene resets
+- **Data Passing**: Structured data objects passed between scenes
+- **Reset Handling**: Explicit reset flags and timestamps for tracking game restarts
+- **State Initialization**: Each scene properly initializes its state in init() method
+- **Logging**: Comprehensive logging for debugging scene transitions
 
 ##### Current Development Environment
 
@@ -95,98 +106,38 @@
 - **Web Limitations**: Canvas performance varies by device and browser
 - **Asset Loading**: Critical for user experience - slow loads lose young players
 - **Mobile Optimization**: Touch events, battery life, and screen size variations
+- **Scene Management**: Proper scene transitions require careful state management
 
 ## Active Challenges & Solutions
 
-### Challenge: Balancing Education & Entertainment
+### Challenge: Game Reset Functionality
 
-**Current Approach**: Story-driven gameplay with immediate feedback and positive reinforcement
+**Problem**: When clicking "Play Again" in EndScene, the game would not properly reset, causing state persistence issues.
 
-### Challenge: Cross-Device Compatibility
+**Solution**: 
+1. Implemented proper scene stopping and starting in EndScene.playAgain()
+2. Added reset flag and timestamp to track game restarts
+3. Updated all scenes to properly handle reset data
+4. Enhanced logging for debugging scene transitions
+5. Ensured each scene properly initializes its state in init() method
 
-**Current Approach**: Responsive design with touch-first interactions and progressive enhancement
+**Implementation Details**:
+- EndScene.playAgain() now stops all game scenes and starts IntroScene with reset data
+- IntroScene handles reset parameter in init() and startGame() methods
+- GameScene and QuizScene always reset their state upon initialization
+- Added comprehensive logging for debugging scene transitions
 
-### Challenge: Asset Creation Pipeline
+### Challenge: State Persistence Between Scenes
 
-**Current Approach**: AI-generated assets with manual optimization for web delivery
+**Problem**: Game state (score, choices) needed to be properly passed between scenes.
 
-## Next Development Phase
+**Solution**:
+1. Structured data objects passed between scenes
+2. Each scene properly initializes from received data
+3. Clear separation between normal initialization and reset initialization
 
-### Phase 1: Foundation (✅ COMPLETED)
-
-- ✅ Complete project structure and development environment
-- ✅ Full scene framework with BaseScene.js and navigation
-- ✅ Core game loop, input handling, and responsive design
-- ✅ Margarine font integration across all text elements
-
-### Phase 2: Core Gameplay (🔄 CURRENT FOCUS)
-
-- 🔄 Enhanced character system with animations and interactions
-- 🔄 Detailed decision mechanics with educational scenarios
-- ✅ Complete quiz system with scoring and feedback
-- 🔄 Advanced dialogue system and story progression
-
-### Phase 3: Polish & Assets (⏳ UPCOMING)
-
-- ⏳ Custom sound effects and background music
-- ⏳ Particle effects and advanced visual polish
-- ⏳ Performance optimization and asset compression
-- ⏳ Advanced animations and character interactions
-
-### Phase 4: Testing & Deployment (⏳ FUTURE)
-
-- ⏳ Cross-browser and device testing
-- ⏳ User experience validation with target age group
-- ⏳ Production deployment and hosting setup
-
-## Risk Mitigation
-
-### Technical Risks
-
-- **Browser Compatibility**: Regular testing across target browsers
-- **Performance Issues**: Monitor frame rates and memory usage
-- **Asset Loading**: Implement fallbacks and loading states
-
-### Project Risks
-
-- **Scope Creep**: Stick to core educational objectives
-- **Timeline Delays**: Break development into manageable phases
-- **Quality Issues**: Regular playtesting and iteration
-
-## Communication & Collaboration Notes
-
-### Documentation Standards
-
-- **Memory Bank Updates**: Update relevant files after each development session
-- **Code Comments**: Document complex logic and architectural decisions
-- **Commit Messages**: Clear, descriptive messages following conventional format
-
-### Quality Assurance
-
-- **Regular Testing**: Test each feature as it's implemented
-- **Performance Monitoring**: Track loading times and frame rates
-- **User Feedback**: Validate with target age group when possible
-
-## Current State Summary
-
-**Status**: Phase 1 foundation complete, fully functional game with core scenes
-**Focus**: Enhancing gameplay content and educational scenarios
-**Confidence**: Very High - solid foundation established, all core systems working
-**Next Action**: Implement advanced character interactions and educational content
-
-## Recent Major Accomplishments
-
-### Font System Implementation (Latest)
-
-- ✅ **Google Fonts Integration**: Added Margarine font to index.html
-- ✅ **BaseScene Updates**: Updated default font family in createButton and createStyledText methods
-- ✅ **Scene-Specific Updates**: Applied Margarine font to all text elements across IntroScene, GameScene, QuizScene, and EndScene
-- ✅ **Comprehensive Coverage**: All UI text, dialogue, buttons, and feedback messages now use consistent Margarine styling
-
-### Core Architecture Achievements
-
-- ✅ **BaseScene.js**: Comprehensive base class with scene transitions, responsive design, and UI utilities
-- ✅ **Scene Navigation**: Smooth transitions between Intro → Game → Quiz → End scenes
-- ✅ **Quiz System**: Complete with questions, multiple choice, scoring, and detailed feedback
-- ✅ **Character System**: All four main characters positioned and labeled in GameScene
-- ✅ **Responsive Design**: Adapts to different screen sizes with proper scaling
+**Implementation Details**:
+- GameScene passes gameData to QuizScene
+- QuizScene calculates final score and passes to EndScene
+- EndScene provides reset data when restarting the game
+- All scenes properly handle both normal and reset initialization
