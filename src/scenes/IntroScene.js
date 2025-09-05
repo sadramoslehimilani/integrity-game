@@ -45,7 +45,7 @@ export class IntroScene extends BaseScene {
     this.titleText = this.createStyledText(
       this.centerX,
       this.centerY - 200,
-      "Integrity: The Lost Whistle",
+      "Integrity: Out of Bounds",
       {
         fontSize: "48px",
         color: "#ffffff",

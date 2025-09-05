@@ -22,10 +22,25 @@ export class GameScene extends BaseScene {
     this.load.image("dialogue-box", "assets/phaser.png"); // Placeholder for dialogue box
 
     // Load Coach Leo animation spritesheet (1000x657, 4 frames in 1 row)
-    this.load.spritesheet("leo-animation", "assets/charecters/leo-animation.png", {
-      frameWidth: 250, // Exact calculation: 1000/4 = 250
-      frameHeight: 657
-    });
+    this.load.spritesheet(
+      "leo-animation",
+      "assets/charecters/leo-animation.png",
+      {
+        frameWidth: 250, // Exact calculation: 1000/4 = 250
+        frameHeight: 657,
+      }
+    );
+
+    // Load Nico animation spritesheet (1951x314, 12 frames in 1 row with 10px padding)
+    this.load.spritesheet(
+      "nico-animation",
+      "assets/charecters/nico-runing-animation.png",
+      {
+        frameWidth: 152.6, // Calculation: (1951 - (11 * 10)) / 12 = 152.6
+        frameHeight: 314,
+        spacing: 10, // Account for 10px padding between frames
+      }
+    );
 
     this.showLoading();
   }
@@ -42,8 +57,9 @@ export class GameScene extends BaseScene {
     // Setup UI
     this.setupUI();
 
-    // Setup Coach Leo animation
+    // Setup character animations
     this.setupCoachLeoAnimation();
+    this.setupNicoAnimation();
 
     // Start the story
     this.startStory();
@@ -145,7 +161,11 @@ export class GameScene extends BaseScene {
    */
   setupCoachLeoAnimation() {
     // Create Coach Leo animation sprite - positioned above dialogue box
-    this.coachLeoSprite = this.add.sprite(80, this.gameHeight - 280, "leo-animation");
+    this.coachLeoSprite = this.add.sprite(
+      80,
+      this.gameHeight - 280,
+      "leo-animation"
+    );
     this.coachLeoSprite.setScale(0.5); // Scale down to fit above dialog area
     this.coachLeoSprite.setOrigin(0, 1); // Anchor to bottom-left
     this.coachLeoSprite.setAlpha(0); // Initially hidden
@@ -154,9 +174,39 @@ export class GameScene extends BaseScene {
     // Create animation configuration
     this.anims.create({
       key: "leo-talk",
-      frames: this.anims.generateFrameNumbers("leo-animation", { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers("leo-animation", {
+        start: 0,
+        end: 3,
+      }),
       frameRate: 4, // 4 frames per second for slower animation
-      repeat: -1 // Loop infinitely
+      repeat: -1, // Loop infinitely
+    });
+  }
+
+  /**
+   * Setup Nico animation sprite and configuration
+   */
+  setupNicoAnimation() {
+    // Create Nico animation sprite - positioned above dialogue box on the left side like Coach Leo
+    this.nicoSprite = this.add.sprite(
+      80,
+      this.gameHeight - 300,
+      "nico-animation"
+    );
+    this.nicoSprite.setScale(0.55); // Adjusted scale for new dimensions
+    this.nicoSprite.setOrigin(0, 1); // Anchor to bottom-left like Coach Leo
+    this.nicoSprite.setAlpha(0); // Initially hidden
+    this.nicoSprite.setDepth(1000); // Ensure it appears above dialogue box
+
+    // Create animation configuration
+    this.anims.create({
+      key: "nico-talk",
+      frames: this.anims.generateFrameNumbers("nico-animation", {
+        start: 0,
+        end: 11,
+      }),
+      frameRate: 8, // 8 frames per second for fluid animation
+      repeat: -1, // Loop infinitely
     });
   }
 
@@ -179,9 +229,27 @@ export class GameScene extends BaseScene {
         target: "coachLeo",
       },
       {
+        speaker: "Nico",
+        text: "I'm ready, Coach! I've been practicing my passing skills all week.",
+        action: "highlight",
+        target: "nico",
+      },
+      {
+        speaker: "Coach Leo",
+        text: "That's great to hear, Nico! Let's see those skills in action today.",
+        action: "highlight",
+        target: "coachLeo",
+      },
+      {
         speaker: "Narrator",
         text: "The practice match begins. Nico is playing well, but then something unexpected happens...",
         action: "setup_scenario",
+      },
+      {
+        speaker: "Nico",
+        text: "Hmm, I'm pretty sure that ball went out of bounds, but the referee didn't see it. Should I say something?",
+        action: "highlight",
+        target: "nico",
       },
     ];
 
@@ -214,8 +282,28 @@ export class GameScene extends BaseScene {
         duration: 500,
         ease: "Power2.easeOut",
       });
-    } else {
-      // Hide Coach Leo animation for other speakers
+
+      // Hide Nico animation when Coach Leo is speaking
+      this.tweens.add({
+        targets: this.nicoSprite,
+        alpha: 0,
+        duration: 300,
+        ease: "Power2.easeOut",
+        onComplete: () => {
+          this.nicoSprite.stop(); // Stop animation when hidden
+        },
+      });
+    } else if (step.speaker === "Nico") {
+      // Show and start Nico animation
+      this.nicoSprite.play("nico-talk");
+      this.tweens.add({
+        targets: this.nicoSprite,
+        alpha: 1,
+        duration: 500,
+        ease: "Power2.easeOut",
+      });
+
+      // Hide Coach Leo animation when Nico is speaking
       this.tweens.add({
         targets: this.coachLeoSprite,
         alpha: 0,
@@ -223,7 +311,19 @@ export class GameScene extends BaseScene {
         ease: "Power2.easeOut",
         onComplete: () => {
           this.coachLeoSprite.stop(); // Stop animation when hidden
-        }
+        },
+      });
+    } else {
+      // Hide both character animations for other speakers
+      this.tweens.add({
+        targets: [this.coachLeoSprite, this.nicoSprite],
+        alpha: 0,
+        duration: 300,
+        ease: "Power2.easeOut",
+        onComplete: () => {
+          this.coachLeoSprite.stop(); // Stop animations when hidden
+          this.nicoSprite.stop();
+        },
       });
     }
 
@@ -289,7 +389,7 @@ export class GameScene extends BaseScene {
   startDecisionPoint() {
     // This will transition to QuizScene for the decision-making part
     this.transitionToScene("QuizScene", {
-      scenario: "lost_whistle",
+      scenario: "out_of_bounds",
       gameData: this.gameData,
     });
   }

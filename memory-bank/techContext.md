@@ -1,4 +1,4 @@
-# Technical Context: Integrity - The Lost Whistle
+# Technical Context: Integrity - Out of Bounds
 
 ## Core Technologies
 
@@ -13,6 +13,9 @@
 - **Phaser Tweens**: For smooth UI transitions and effects
 - **Sprite Management**: Efficient loading and caching system
 - **Spritesheet Animations**: Character animations using Phaser's animation system
+  - Coach Leo: 4 frames at 4fps
+  - Nico: 12 frames at 12fps with 10px spacing
+  - Carla: 9 frames at 9fps with 10px spacing
 - **Responsive Scaling**: Dynamic sizing based on screen dimensions
 - **Google Fonts**: Margarine font family for consistent typography
 - **Depth Layering**: Z-index management for proper visual hierarchy

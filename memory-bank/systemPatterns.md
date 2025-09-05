@@ -1,4 +1,4 @@
-# System Patterns: Integrity - The Lost Whistle
+# System Patterns: Integrity - Out of Bounds
 
 ## Architecture Overview
 
@@ -223,6 +223,8 @@ assets/
 ├── images/
 │   ├── characters/
 │   │   ├── leo-animation.png (1000x657, 4 frames)
+│   │   ├── nico-runing-animation.png (1951x314, 12 frames with 10px spacing)
+│   │   ├── carla-speaking.png (1816x408, 9 frames with 10px spacing)
 │   │   └── [other character spritesheets]
 │   └── backgrounds/
 └── audio/ (pending)
@@ -254,10 +256,12 @@ class AnimationManager {
   }
 }
 
-// Character spritesheet animation implementation
+// Character spritesheet animation implementation examples
+
+// Coach Leo animation
 this.anims.create({
     key: 'coach-leo-animation',
-    frames: this.anims.generateFrameNumbers('coach-leo-spritesheet', {
+    frames: this.anims.generateFrameNumbers('leo-animation', {
         start: 0,
         end: 3
     }),
@@ -265,8 +269,30 @@ this.anims.create({
     repeat: -1
 });
 
+// Nico animation
+this.anims.create({
+    key: 'nico-talk',
+    frames: this.anims.generateFrameNumbers('nico-animation', {
+        start: 0,
+        end: 11
+    }),
+    frameRate: 12,
+    repeat: -1
+});
+
+// Carla animation
+this.anims.create({
+    key: 'carla-talk',
+    frames: this.anims.generateFrameNumbers('carla-animation', {
+        start: 0,
+        end: 8
+    }),
+    frameRate: 9,
+    repeat: -1
+});
+
 // Character sprite positioning with animation
-const coachLeoSprite = this.add.sprite(x, y, 'coach-leo-spritesheet')
+const coachLeoSprite = this.add.sprite(x, y, 'leo-animation')
     .setScale(0.5)
     .setOrigin(0, 1)
     .setDepth(1000)

@@ -1,4 +1,4 @@
-# Active Context: Integrity - The Lost Whistle
+# Active Context: Integrity - Out of Bounds
 
 ## Current Work Focus
 
@@ -8,6 +8,9 @@
 - ✅ **COMPLETED**: Margarine Google Font integration across all text elements
 - ✅ **COMPLETED**: Responsive design and scene navigation system
 - ✅ **COMPLETED**: Coach Leo character animation system with spritesheet integration
+- ✅ **COMPLETED**: Nico character animation system with 12-frame spritesheet
+- ✅ **COMPLETED**: Carla character animation system with 9-frame spritesheet
+- ✅ **COMPLETED**: Scenario updated from "The Lost Whistle" to "Out of Bounds"
 - 🔄 **CURRENT**: Ready for Phase 4 - Assets & Polish Enhancement
 
 ### Immediate Next Steps
@@ -45,7 +48,10 @@
 ### Animation & Interaction Patterns
 
 - **Smooth Transitions**: 300-500ms tweens for UI elements
-- **Character Animations**: Spritesheet-based animations (Coach Leo: 4 frames, 4fps)
+- **Character Animations**: Spritesheet-based animations
+  - Coach Leo: 4 frames at 4fps
+  - Nico: 12 frames at 12fps with 10px spacing
+  - Carla: 9 frames at 9fps with 10px spacing
 - **Visual Feedback**: Immediate response to user interactions
 - **Progressive Disclosure**: Introduce complexity gradually
 - **Error Prevention**: Guide users toward correct interactions

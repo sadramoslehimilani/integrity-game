@@ -5,7 +5,7 @@ import { EndScene } from "./scenes/EndScene.js";
 
 const config = {
   type: Phaser.AUTO,
-  title: "Integrity: The Lost Whistle",
+  title: "Integrity: Out of Bounds",
   description: "An educational game about honesty and making the right choices",
   parent: "game-container",
   width: 1280,

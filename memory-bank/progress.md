@@ -1,10 +1,10 @@
-# Progress: Integrity - The Lost Whistle
+# Progress: Integrity - Out of Bounds
 
 ## Current Status Overview
 
 **Project Phase**: Phase 2 Complete - Core Gameplay Implemented
-**Completion Level**: 95% (Fully Functional Game)
-**Last Updated**: January 17, 2025
+**Completion Level**: 97% (Fully Functional Game)
+**Last Updated**: September 5, 2025
 **Next Milestone**: Phase 4 - Assets & Polish
 
 ## What Works ✅
@@ -42,6 +42,9 @@
 - ✅ **Decision Logic**: Framework established for interactive choices
 - ✅ **Animation System**: Basic scene transitions and UI interactions implemented
 - ✅ **Coach Leo Animation**: Fully implemented with spritesheet (4 frames, 4fps, positioned above dialogue)
+- ✅ **Nico Animation**: Fully implemented with spritesheet (12 frames, 12fps, with 10px spacing)
+- ✅ **Carla Animation**: Fully implemented with spritesheet (9 frames, 9fps, with 10px spacing)
+- ✅ **Scenario Update**: Changed from "The Lost Whistle" to "Out of Bounds"
 
 ### Phase 3: Interactive Features (100% Complete) ✅
 

@@ -426,7 +426,7 @@ export class EndScene extends BaseScene {
       .text(
         this.centerX,
         this.centerY - 20,
-        `I just played "Integrity: The Lost Whistle" and scored ${this.percentage}%!\nI learned about honesty and making the right choices.`,
+        `I just played "Integrity: Out of Bounds" and scored ${this.percentage}%!\nI learned about honesty and making the right choices.`,
         {
           fontSize: "16px",
           fontFamily: "Margarine, cursive",

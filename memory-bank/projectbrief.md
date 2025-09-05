@@ -1,8 +1,8 @@
-# Project Brief: Integrity - The Lost Whistle
+# Project Brief: Integrity - Out of Bounds
 
 ## Project Overview
 
-**Integrity: The Lost Whistle** is an interactive educational mini-game built with Phaser.js that teaches children aged 6-9 about the importance of honesty and integrity through an engaging soccer scenario.
+**Integrity: Out of Bounds** is an interactive educational mini-game built with Phaser.js that teaches children aged 6-9 about the importance of honesty and integrity through an engaging soccer scenario.
 
 ## Core Requirements
 

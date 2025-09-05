@@ -14,7 +14,7 @@ export class QuizScene extends BaseScene {
 
   init(data) {
     super.init(data);
-    this.scenario = data.scenario || "lost_whistle";
+    this.scenario = data.scenario || "out_of_bounds";
     this.gameData = data.gameData || { playerChoices: [], integrityScore: 0 };
   }
 
@@ -25,6 +25,13 @@ export class QuizScene extends BaseScene {
     // Load character portraits for questions
     this.load.image("nico-portrait", "assets/phaser.png");
     this.load.image("carla-portrait", "assets/phaser.png");
+    
+    // Load Carla animation spritesheet (1816x408, 9 frames in 1 row with 10px padding)
+    this.load.spritesheet("carla-animation", "assets/charecters/carla-speaking.png", {
+      frameWidth: 192.9, // Calculation: (1816 - (8 * 10)) / 9 = 192.9
+      frameHeight: 408,
+      spacing: 10 // Account for 10px padding between frames
+    });
 
     this.showLoading();
   }
@@ -38,12 +45,35 @@ export class QuizScene extends BaseScene {
 
     // Setup quiz UI
     this.setupQuizUI();
+    
+    // Setup Carla animation
+    this.setupCarlaAnimation();
 
     // Load scenario questions
     this.loadScenarioQuestions();
 
     // Start first question
     this.showQuestion();
+  }
+  
+  /**
+   * Setup Carla animation sprite and configuration
+   */
+  setupCarlaAnimation() {
+    // Create Carla animation sprite - positioned where the character portrait is
+    this.carlaSprite = this.add.sprite(this.centerX - 250, this.centerY - 100, "carla-animation");
+    this.carlaSprite.setScale(0.45); // Adjusted scale for the quiz scene
+    this.carlaSprite.setOrigin(0.5, 0.5); // Center origin
+    this.carlaSprite.setAlpha(0); // Initially hidden
+    this.carlaSprite.setDepth(1001); // Ensure it appears above other elements
+
+    // Create animation configuration
+    this.anims.create({
+      key: "carla-talk",
+      frames: this.anims.generateFrameNumbers("carla-animation", { start: 0, end: 8 }),
+      frameRate: 8, // 8 frames per second for fluid animation
+      repeat: -1 // Loop infinitely
+    });
   }
 
   /**
@@ -157,31 +187,31 @@ export class QuizScene extends BaseScene {
    * Load questions based on scenario
    */
   loadScenarioQuestions() {
-    // Define questions for the "lost whistle" scenario
+    // Define questions for the "ball out of bounds" scenario
     this.questions = [
       {
         character: "Narrator",
         portrait: "nico-portrait",
-        question: "The Lost Whistle",
+        question: "The Out of Bounds Ball",
         scenario:
-          "During practice, Nico accidentally kicks the ball and it hits the referee's whistle, knocking it into the bushes. The referee doesn't notice and continues the game. What should Nico do?",
+          "During practice, Nico sees the ball go out of bounds, but the referee doesn't notice and allows play to continue. Nico's team keeps possession. What should Nico do?",
         choices: [
           {
-            text: "Tell the referee immediately what happened",
+            text: "Tell the referee immediately that the ball went out",
             integrity: 10,
             feedback:
               "Excellent! Being honest right away shows great integrity.",
           },
           {
-            text: "Wait until after the game to tell the referee",
+            text: "Wait until after the play to mention it",
             integrity: 5,
             feedback: "Good thinking, but it's better to be honest right away.",
           },
           {
-            text: "Don't say anything and hope no one notices",
+            text: "Don't say anything since it benefits my team",
             integrity: 0,
             feedback:
-              "This isn't the right choice. Honesty is always the best policy.",
+              "This isn't the right choice. Honesty is always the best policy, even when it doesn't benefit you.",
           },
         ],
       },
@@ -190,10 +220,10 @@ export class QuizScene extends BaseScene {
         portrait: "carla-portrait",
         question: "Carla's Question",
         scenario:
-          'Carla saw what happened with the whistle. She asks Nico, "Are you going to tell the referee?" How should Nico respond?',
+          'Carla also saw the ball go out of bounds. She asks Nico, "Are you going to tell the referee it was out?" How should Nico respond?',
         choices: [
           {
-            text: '"Yes, I should tell the truth about what happened."',
+            text: '"Yes, I should tell the truth even if it means losing possession."',
             integrity: 10,
             feedback:
               "Perfect! Nico shows he understands the importance of honesty.",
@@ -205,9 +235,9 @@ export class QuizScene extends BaseScene {
               "It's okay to feel uncertain, but the right thing to do is be honest.",
           },
           {
-            text: '"No, it\'s not a big deal."',
+            text: '"No, it\'s not a big deal and it helps our team."',
             integrity: 0,
-            feedback: "Even small mistakes matter. Being honest builds trust.",
+            feedback: "Even small mistakes matter. Being honest builds trust and shows true sportsmanship.",
           },
         ],
       },
@@ -216,24 +246,24 @@ export class QuizScene extends BaseScene {
         portrait: "nico-portrait",
         question: "Coach's Lesson",
         scenario:
-          'After Nico tells the truth, Coach Leo talks to the team about integrity. He asks, "Why is it important to be honest, even about small mistakes?"',
+          'After Nico tells the truth about the ball going out of bounds, Coach Leo talks to the team about integrity. He asks, "Why is it important to be honest in sports, even when it might disadvantage your team?"',
         choices: [
           {
-            text: '"Because honesty helps people trust us"',
+            text: '"Because fair play and honesty are more important than winning"',
             integrity: 10,
-            feedback: "Exactly right! Trust is built through honest actions.",
+            feedback: "Exactly right! True sportsmanship values integrity over victory.",
           },
           {
-            text: '"Because we might get in trouble if we lie"',
+            text: '"Because we might get in trouble if we get caught cheating"',
             integrity: 5,
             feedback:
-              "That's one reason, but the best reason is that honesty builds trust.",
+              "That's one reason, but the best reason is that fair play and integrity are fundamental to good sportsmanship.",
           },
           {
             text: '"I don\'t know"',
             integrity: 2,
             feedback:
-              "That's okay! The important thing is that honesty helps people trust us.",
+              "That's okay! The important thing is that honesty and fair play are more important than winning at all costs.",
           },
         ],
       },
@@ -256,12 +286,19 @@ export class QuizScene extends BaseScene {
       `Question ${this.currentQuestion + 1} of ${this.questions.length}`
     );
 
-    // Update character portrait
-    this.characterPortrait.setTexture(question.portrait);
+    // Handle character display
     if (question.character === "Carla") {
-      this.characterPortrait.setTint(0xe74c3c);
+      // Hide static portrait and show animated Carla
+      this.characterPortrait.setAlpha(0);
+      this.carlaSprite.setAlpha(1);
+      this.carlaSprite.play("carla-talk");
     } else {
+      // Show static portrait and hide animated Carla
+      this.characterPortrait.setTexture(question.portrait);
       this.characterPortrait.setTint(0x3498db);
+      this.characterPortrait.setAlpha(1);
+      this.carlaSprite.setAlpha(0);
+      this.carlaSprite.stop();
     }
 
     // Update question text
@@ -337,6 +374,11 @@ export class QuizScene extends BaseScene {
         item.disableInteractive();
       }
     });
+    
+    // Stop Carla's animation when a choice is selected
+    if (this.carlaSprite && this.carlaSprite.anims.isPlaying) {
+      this.carlaSprite.stop();
+    }
 
     // Record answer
     this.playerAnswers.push({
@@ -360,6 +402,12 @@ export class QuizScene extends BaseScene {
    * Show feedback for selected choice
    */
   showFeedback(feedbackText, callback) {
+    // Stop Carla's animation if it's playing
+    if (this.carlaSprite && this.carlaSprite.anims.isPlaying) {
+      this.carlaSprite.stop();
+      this.carlaSprite.setAlpha(0);
+    }
+    
     // Create feedback overlay
     const feedbackOverlay = this.add.container(0, 0);
 

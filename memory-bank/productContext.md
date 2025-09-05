@@ -1,8 +1,8 @@
-# Product Context: Integrity - The Lost Whistle
+# Product Context: Integrity - Out of Bounds
 
 ## Why This Project Exists
 
-Children today face increasing pressure to make ethical decisions in complex social situations. Traditional moral education often relies on lectures and stories that can feel disconnected from real life. **Integrity: The Lost Whistle** bridges this gap by providing an interactive, game-based learning experience that makes integrity tangible and memorable.
+Children today face increasing pressure to make ethical decisions in complex social situations. Traditional moral education often relies on lectures and stories that can feel disconnected from real life. **Integrity: Out of Bounds** bridges this gap by providing an interactive, game-based learning experience that makes integrity tangible and memorable.
 
 ## Problems Solved
 
