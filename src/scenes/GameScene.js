@@ -75,6 +75,17 @@ export class GameScene extends BaseScene {
       }
     );
 
+    // Load Nico kicking animation spritesheet (2170x415, 6 frames in 1 row with 10px padding)
+    this.load.spritesheet(
+      "nico-kicking",
+      "assets/charecters/nico-kicking.png",
+      {
+        frameWidth: 353.33, // Calculation: (2170 - (5 * 10)) / 6 = 353.33
+        frameHeight: 415,
+        spacing: 10, // Account for 10px padding between frames
+      }
+    );
+
     this.showLoading();
   }
 
@@ -237,7 +248,18 @@ export class GameScene extends BaseScene {
     this.nicoSprite.setAlpha(0); // Initially hidden
     this.nicoSprite.setDepth(1000); // Ensure it appears above dialogue box
 
-    // Create animation configuration
+    // Create Nico kicking sprite - same position but different texture
+    this.nicoKickingSprite = this.add.sprite(
+      80,
+      this.gameHeight - 300,
+      "nico-kicking"
+    );
+    this.nicoKickingSprite.setScale(0.5); // Increased scale to make kicking animation bigger
+    this.nicoKickingSprite.setOrigin(0, 1); // Anchor to bottom-left like Coach Leo
+    this.nicoKickingSprite.setAlpha(0); // Initially hidden
+    this.nicoKickingSprite.setDepth(1000); // Ensure it appears above dialogue box
+
+    // Create animation configurations
     this.anims.create({
       key: "nico-talk",
       frames: this.anims.generateFrameNumbers("nico-animation", {
@@ -245,6 +267,16 @@ export class GameScene extends BaseScene {
         end: 11,
       }),
       frameRate: 8, // 8 frames per second for fluid animation
+      repeat: -1, // Loop infinitely
+    });
+
+    this.anims.create({
+      key: "nico-kick",
+      frames: this.anims.generateFrameNumbers("nico-kicking", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 6, // 6 frames per second for kicking animation
       repeat: -1, // Loop infinitely
     });
   }
@@ -333,14 +365,50 @@ export class GameScene extends BaseScene {
         },
       });
     } else if (step.speaker === "Nico") {
-      // Show and start Nico animation
-      this.nicoSprite.play("nico-talk");
-      this.tweens.add({
-        targets: this.nicoSprite,
-        alpha: 1,
-        duration: 500,
-        ease: "Power2.easeOut",
-      });
+      // Check if this is the specific dialogue about the ball going out of bounds
+      const isKickingDialogue = step.text.includes("I'm pretty sure that ball went out of bounds");
+      
+      if (isKickingDialogue) {
+        // Show and start Nico kicking animation
+        this.nicoKickingSprite.play("nico-kick");
+        this.tweens.add({
+          targets: this.nicoKickingSprite,
+          alpha: 1,
+          duration: 500,
+          ease: "Power2.easeOut",
+        });
+        
+        // Ensure regular Nico sprite is hidden
+        this.tweens.add({
+          targets: this.nicoSprite,
+          alpha: 0,
+          duration: 300,
+          ease: "Power2.easeOut",
+          onComplete: () => {
+            this.nicoSprite.stop();
+          },
+        });
+      } else {
+        // Show and start regular Nico animation
+        this.nicoSprite.play("nico-talk");
+        this.tweens.add({
+          targets: this.nicoSprite,
+          alpha: 1,
+          duration: 500,
+          ease: "Power2.easeOut",
+        });
+        
+        // Ensure kicking sprite is hidden
+        this.tweens.add({
+          targets: this.nicoKickingSprite,
+          alpha: 0,
+          duration: 300,
+          ease: "Power2.easeOut",
+          onComplete: () => {
+            this.nicoKickingSprite.stop();
+          },
+        });
+      }
 
       // Hide Coach Leo animation when Nico is speaking
       this.tweens.add({
@@ -353,15 +421,16 @@ export class GameScene extends BaseScene {
         },
       });
     } else {
-      // Hide both character animations for other speakers
+      // Hide all character animations for other speakers
       this.tweens.add({
-        targets: [this.coachLeoSprite, this.nicoSprite],
+        targets: [this.coachLeoSprite, this.nicoSprite, this.nicoKickingSprite],
         alpha: 0,
         duration: 300,
         ease: "Power2.easeOut",
         onComplete: () => {
           this.coachLeoSprite.stop(); // Stop animations when hidden
           this.nicoSprite.stop();
+          this.nicoKickingSprite.stop();
         },
       });
     }
